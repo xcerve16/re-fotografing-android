@@ -11,13 +11,13 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-             native-lib
+             native-cpp
 
              # Sets the library as a shared library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/jni/main.cpp src/main/jni/main.h src/main/jni/ModelRegistration.cpp src/main/jni/ModelRegistration.h src/main/jni/PnPProblem.cpp src/main/jni/PnPProblem.h src/main/jni/RobustMatcher.cpp src/main/jni/RobustMatcher.h src/main/jni/Utils.cpp src/main/jni/Utils.h src/main/jni/CameraCalibrator.cpp src/main/jni/CameraCalibrator.h src/main/jni/MyRobustMatcher.cpp src/main/jni/Line2D.cpp src/main/jni/Line2D.h src/main/jni/MSAC.cpp src/main/jni/MSAC.h src/main/jni/errorNIETO.cpp src/main/jni/errorNIETO.h src/main/jni/lmmin.cpp src/main/jni/lmmin.h)
+             src/main/jni/com_delaroystudios_camera_OpenCVNative.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
@@ -37,7 +37,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       native-lib
+                       native-cpp
 
                        # Links the target library to the log library
                        # included in the NDK.
