@@ -11,12 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import org.opencv.core.Mat;
-
-import java.util.ArrayList;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-
 /**
  * Created by acervenka2 on 20.03.2017.
  */
@@ -24,10 +18,6 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 public class RefotografieActivity extends ActionBarActivity {
 
     private ImageView capturedImage;
-
-
-    private double focal_length;
-    private double optical_center;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

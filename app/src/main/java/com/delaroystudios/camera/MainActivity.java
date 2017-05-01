@@ -2,29 +2,22 @@ package com.delaroystudios.camera;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Camera;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.opencv.android.OpenCVLoader;
 
-import static android.R.id.message;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private static String TAG = "MainActivity";
 
     static {
         if (!OpenCVLoader.initDebug()) {
@@ -58,22 +51,37 @@ public class MainActivity extends ActionBarActivity {
 
     public void insertCalibrationData(View view) {
         String regexStr = "^[0-9]*$";
-        EditText enter_focal_length = (EditText) dialog.findViewById(R.id.enter_focal_length);
-        EditText enter_optical_center = (EditText) dialog.findViewById(R.id.enter_optical_center);
-        String focal_length = enter_focal_length.getText().toString();
-        String optical_center = enter_optical_center.getText().toString();
+        EditText tf[] = new EditText[8];
+        String params[] = new String[8];
+        String message = "";
+        boolean isCorrect = true;
 
-        if (!focal_length.trim().matches(regexStr)) {
-            TextView error_message = (TextView) dialog.findViewById(R.id.error_message);
-            error_message.setVisibility(View.VISIBLE);
-        } else if (!optical_center.trim().matches(regexStr)) {
-            TextView error_message = (TextView) dialog.findViewById(R.id.error_message);
-            error_message.setVisibility(View.VISIBLE);
-        } else {
+        tf[0] = (EditText) dialog.findViewById(R.id.tf_cxf);
+        tf[1] = (EditText) dialog.findViewById(R.id.tf_cyf);
+        tf[2] = (EditText) dialog.findViewById(R.id.tf_fxf);
+        tf[3] = (EditText) dialog.findViewById(R.id.tf_fyf);
+        tf[4] = (EditText) dialog.findViewById(R.id.tf_cxc);
+        tf[5] = (EditText) dialog.findViewById(R.id.tf_cyc);
+        tf[6] = (EditText) dialog.findViewById(R.id.tf_fxc);
+        tf[7] = (EditText) dialog.findViewById(R.id.tf_fyc);
+
+        for(int i = 0; i < tf.length; i++){
+            params[i] = tf[i].getText().toString();
+            message += params[i] + ";";
+            if (!params[i].trim().matches(regexStr)) {
+                TextView error_message = (TextView) dialog.findViewById(R.id.error_message);
+                error_message.setVisibility(View.VISIBLE);
+                isCorrect = false;
+                break;
+            }
+        }
+
+        if(isCorrect){
             ActivityCompat.finishAffinity(this);
-            Intent intent = new Intent(this, CameraActivity.class);
-            intent.putExtra(EXTRA_MESSAGE, focal_length + ";" + optical_center);
+            Intent intent = new Intent(this, SettingActivity.class);
+            intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
         }
     }
+
 }

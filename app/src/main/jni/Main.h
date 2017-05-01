@@ -58,7 +58,7 @@ MSAC msac;
 // Robust cv::Matcher parameters
 double confidenceLevel = 0.999;
 float ratioTest = 0.70f;
-double max_distance = 1;
+double max_distance = 2;
 
 // SIFT parameters
 int numKeyPoints = 1000;
@@ -83,9 +83,11 @@ const std::string path_rephotography = "resource/results/exp_grand_hotel.jpg";*/
 // Biskupsky palac
 const std::string path_to_first_image = "resource/image/GPS/Biskupsky_dvur (1).jpg";
 const std::string path_to_second_image = "resource/image/GPS/Biskupsky_dvur (2).jpg";
+const std::string path_to_third_image = "resource/image/GPS/Biskupsky_dvur (3).jpg";
+
 const std::string path_to_ref_image = "resource/reference/ref_biskupsky_palac.jpg";
 const std::string video_read_path = "resource/video/biskupsky_palac.mp4";
-//const std::string path_rephotography = "resource/results/exp_biskupsky_palac.jpg";
+//const std::string path_rephotography = "resource/results/exp_biskupsky_palac.jpg";*/
 
 // Ulice Ceska
 /*const std::string path_to_first_image = "resource/image/ulice_ceska (2).jpg";
@@ -168,22 +170,25 @@ struct robust_matcher_struct {
     cv::Mat current_frame;
     std::vector<cv::Point3f> list_3D_points;
     cv::Mat measurements;
+    int directory;
 };
 
 struct fast_robust_matcher_struct {
     cv::Mat last_current_frame;
     std::vector<cv::Point3f> list_3D_points;
     cv::Mat current_frame;
+    int directory;
 };
 
 void *robust_matcher(void *arg);
 
 void *fast_robust_matcher(void *arg);
 
-bool getRobustEstimation(cv::Mat current_frame_vis, std::vector<cv::Point3f> list_3D_points, cv::Mat measurements);
+bool getRobustEstimation(cv::Mat current_frame_vis, std::vector<cv::Point3f> list_3D_points, cv::Mat measurements,
+                         int &directory);
 
 bool getLightweightEstimation(cv::Mat last_current_frame_vis, std::vector<cv::Point3f> list_3D_points,
-                              cv::Mat current_frame_vis);
+                              cv::Mat current_frame_vis, int &directory);
 
 void updateKalmanFilter(cv::KalmanFilter &KF, cv::Mat &measurements, cv::Mat &translation_estimated,
                         cv::Mat &rotation_estimated);
@@ -195,6 +200,8 @@ pthread_t fast_robust_matcher_t, robust_matcher_t;
 robust_matcher_struct robust_matcher_arg_struct;
 
 fast_robust_matcher_struct fast_robust_matcher_arg_struct;
+
+int getDirectory(int x, int y);
 
 class Main {
 
@@ -209,11 +216,9 @@ private:
 
     std::vector<cv::Point2f> detection_points_first_image;
 
-    std::vector<cv::Point3f> list_3D_points_after_triangulation;
+    std::vector<cv::Point3f> list_3D_points;
 
-    int previousNumRegistration;
-
-    std::vector<int> index_of_points;
+    std::vector<int> index_points;
 
     std::vector<cv::Mat> current_frames;
 
@@ -229,20 +234,26 @@ private:
 
     std::vector<cv::Mat> processImage(MSAC &msac, int numVps, cv::Mat &imgGRAY, cv::Mat &outputImg);
 
+
 public:
-    Main(){};
+    Main() {};
 
-    void initReconstruction(cv::Mat first_frame, cv::Mat second_frame, cv::Mat reference_frame, cv::Point2f cf, cv::Point2f ff, cv::Point2f cc, cv::Point2f fc);
+    void initReconstruction(cv::Mat first_frame, cv::Mat second_frame, cv::Mat reference_frame, cv::Point2f cf,
+                            cv::Point2f ff, cv::Point2f cc, cv::Point2f fc);
 
-    void processReconstruction();
+    cv::Mat processReconstruction();
 
-    void nextPoint();
+    ModelRegistration getModelRegistration() { return registration; }
 
-    void registrationPoints(double x, double y, cv::Mat& out);
+    cv::Point2f nextPoint();
+
+    cv::Point2f registrationPoints(float x, float y);
 
     void initNavigation();
 
     int processNavigation(cv::Mat current_frame, int count_frames);
+
+
 };
 
 

@@ -7,16 +7,16 @@
 extern "C" {
 
 JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_initReconstruction
-  (JNIEnv *, jclass, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jfloatArray);
 
 JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_processReconstruction
-  (JNIEnv *, jclass, jdouble, jdouble, jdouble, jdouble);
+  (JNIEnv *, jclass, jlong);
 
-JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_nextPoint
+JNIEXPORT jfloatArray JNICALL Java_com_delaroystudios_camera_OpenCVNative_nextPoint
   (JNIEnv *, jclass);
 
-JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_registrationPoints
-  (JNIEnv *, jclass, jdouble, jdouble, jlong);
+JNIEXPORT jfloatArray JNICALL Java_com_delaroystudios_camera_OpenCVNative_registrationPoints
+  (JNIEnv *, jclass, jdouble, jdouble);
 
 JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_initNavigation
   (JNIEnv *, jclass);

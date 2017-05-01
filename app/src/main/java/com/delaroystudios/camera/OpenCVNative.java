@@ -12,13 +12,13 @@ public class OpenCVNative {
         System.loadLibrary("native-lib");
     }
 
-    public static native void initReconstruction(long first_frame, long second_frame, long reference_frame, float cx_f, float cy_f, float fx_f, float fy_f, float cx_c, float cy_c, float fx_c, float fy_c);
+    public static native void initReconstruction(long first_frame, long second_frame, long reference_frame, float[] arg);
 
-    public static native void processReconstruction();
+    public static native void processReconstruction(long out);
 
-    public static native void nextPoint();
+    public static native float[] nextPoint();
 
-    public static native long registrationPoints(double x, double y);
+    public static native float[] registrationPoints(double x, double y);
 
     public static native void initNavigation();
 

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "net.simplifiedcoding.androidcameraapp"
-        minSdkVersion 15
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -57,5 +57,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':openCVLibrary310')
     compile 'junit:junit:4.12'
+    compile project(path: ':aFileChooser')
 }
 

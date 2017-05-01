@@ -1,7 +1,6 @@
 package com.delaroystudios.camera;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
@@ -20,6 +19,9 @@ import org.opencv.core.Mat;
 import java.io.IOException;
 
 public class CameraPreview implements SurfaceHolder.Callback, Camera.PreviewCallback {
+
+    private static String TAG = "CameraPreview";
+
     private Camera mCamera = null;
     private ImageView MyCameraPreview = null;
     private Bitmap bitmap = null;
@@ -29,7 +31,7 @@ public class CameraPreview implements SurfaceHolder.Callback, Camera.PreviewCall
     private int PreviewSizeHeight;
     private boolean bProcessing = false;
 
-    public int countFrames = 0;
+    public int countFrames = 1;
 
     Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -70,7 +72,7 @@ public class CameraPreview implements SurfaceHolder.Callback, Camera.PreviewCall
         imageFormat = parameters.getPreviewFormat();
 
         mCamera.setParameters(parameters);
-        mCamera.setDisplayOrientation(270);
+        mCamera.setDisplayOrientation(90);
         mCamera.startPreview();
     }
 
@@ -131,14 +133,33 @@ public class CameraPreview implements SurfaceHolder.Callback, Camera.PreviewCall
             Mat currentFrames = new Mat();
             Utils.bitmapToMat(bitmap, currentFrames);
 
-            int direction = OpenCVNative.processNavigation(currentFrames.getNativeObjAddr(),countFrames);
+            int direction;
+
+            try {
+                direction = OpenCVNative.processNavigation(currentFrames.getNativeObjAddr(), 1);
+                Log.d(TAG, "Value of direction is: " + direction);
+            } catch (java.lang.IllegalArgumentException e) {
+                Log.e(TAG, e.getMessage());
+                direction = 1;
+            }
+
 
             //1 up, 2, down, 3 right, 4 left;
             Path wallpath = new Path();
             wallpath.reset();
             if (direction < 10) {
-
                 switch (direction) {
+                    case 0:
+                        wallpath.moveTo(x, y + height / 8);
+                        wallpath.lineTo(x + width / 8, y);
+                        wallpath.lineTo(x + width, y + height * 7 / 8);
+                        wallpath.lineTo(x + width * 7 / 8, y + height);
+
+                        wallpath.moveTo(x+width, y + height / 8);
+                        wallpath.lineTo(x + width*7 / 8, y);
+                        wallpath.lineTo(x, y + height * 7 / 8);
+                        wallpath.lineTo(x + width / 8, y + height);
+                        break;
                     case 1:
                         wallpath.moveTo(x + width / 4, y + height / 2);
                         wallpath.lineTo(x + width / 4 + width / 2, y + height / 2);

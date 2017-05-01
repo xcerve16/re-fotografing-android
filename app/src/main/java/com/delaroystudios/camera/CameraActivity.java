@@ -1,33 +1,27 @@
 package com.delaroystudios.camera;
 
-import android.content.ActivityNotFoundException;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
-import java.io.Serializable;
+import java.io.File;
 import java.util.ArrayList;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
@@ -36,7 +30,7 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
  * Created by acervenka2 on 20.03.2017.
  */
 
-public class CameraActivity extends ActionBarActivity {
+public class CameraActivity extends Activity {
 
     private static String TAG = "CameraActivity";
 
@@ -44,18 +38,46 @@ public class CameraActivity extends ActionBarActivity {
 
     private ArrayList<Bitmap> images;
 
-    private double focal_length;
-    private double optical_center;
+    private Mat firstFrame;
+    private Mat secondFrame;
+    private Mat refFrame;
 
-    private Mat firstFrame = new Mat();
-    private Mat secondFrame = new Mat();
-    private Mat refFrame = new Mat();
+    String path_ref_image;
+    String path_first_image;
+    String path_second_image;
 
-    private float cx_f, cy_f, fx_f, fy_f, cx_c, cy_c, fx_c, fy_c;
+    private float[] calibrate_params;
+
+    Intent intent1;
+
+    private BaseLoaderCallback mOpenCVCallBack = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS: {
+                    refFrame = new Mat();
+                    firstFrame = new Mat();
+                    secondFrame = new Mat();
+                    calc();
+                }
+                break;
+                default: {
+                    super.onManagerConnected(status);
+                }
+                break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_1_0, this, mOpenCVCallBack)) {
+            Log.e("TEST", "Cannot connect to OpenCV Manager");
+        }
+
+
         setContentView(R.layout.activity_main);
 
         ImageView layout1 = (ImageView) findViewById(R.id.capturedImage);
@@ -63,7 +85,7 @@ public class CameraActivity extends ActionBarActivity {
         layout1.setImageDrawable(myDrawable);
 
 
-        Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
+        Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         Button btnCamera = (Button) findViewById(R.id.btnCamera);
 
         capturedImage = (ImageView) findViewById(R.id.capturedImage);
@@ -79,21 +101,57 @@ public class CameraActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         String message = intent.getStringExtra(EXTRA_MESSAGE);
+
+
         String delims = "[;]";
         String[] value = message.split(delims);
-        cx_f = Float.parseFloat(value[0]);
-        cy_f = Float.parseFloat(value[1]);
-        fx_f = Float.parseFloat(value[2]);
-        fy_f = Float.parseFloat(value[3]);
 
-        cx_c = Float.parseFloat(value[4]);
-        cy_c = Float.parseFloat(value[5]);
-        fx_c = Float.parseFloat(value[6]);
-        fy_c = Float.parseFloat(value[7]);
-
+        calibrate_params = new float[8];
+        for (int i = 0; i < calibrate_params.length; i++) {
+            calibrate_params[i] = Float.parseFloat(value[i]);
+        }
 
         images = new ArrayList<>();
+
+        intent1 = new Intent(this, SelectPointsActivity.class);
+
+        path_ref_image = intent.getStringExtra("PATH_REF_IMAGE");
+        path_first_image = intent.getStringExtra("PATH_FIRST_IMAGE");
+        path_second_image = intent.getStringExtra("PATH_SECOND_IMAGE");
+
     }
+
+    private void calc(){
+        File file0 = new File(path_ref_image);
+        Bitmap myBitmap0 = BitmapFactory.decodeFile(file0.getAbsolutePath());
+        Utils.bitmapToMat(myBitmap0, refFrame);
+
+       /* Log.d(TAG,"Ref images: " + path_ref_image);
+        Log.d(TAG,"First images: " +  path_first_image);
+        Log.d(TAG,"Second images: " +  path_second_image);*/
+
+        if (!"".equals(path_first_image) && !"".equals(path_second_image)) {
+
+            File file1 = new File(path_first_image);
+            File file2 = new File(path_second_image);
+
+
+            Bitmap myBitmap1 = BitmapFactory.decodeFile(file1.getAbsolutePath());
+            Bitmap myBitmap2 = BitmapFactory.decodeFile(file2.getAbsolutePath());
+
+            Utils.bitmapToMat(myBitmap1, firstFrame);
+            Utils.bitmapToMat(myBitmap2, secondFrame);
+
+            OpenCVNative.initReconstruction(firstFrame.getNativeObjAddr(), secondFrame.getNativeObjAddr(), refFrame.getNativeObjAddr(), calibrate_params);
+            OpenCVNative.processReconstruction(firstFrame.getNativeObjAddr());
+            //Log.i(TAG, "Desc: " + out.dump());
+
+            intent1.putExtra("first_image", firstFrame.getNativeObjAddr());
+            intent1.putExtra("ref_image", refFrame.getNativeObjAddr());
+            startActivity(intent1);
+        }
+    }
+
 
     private void openCamera() {
         Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -104,24 +162,23 @@ public class CameraActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "Some data");
 
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             Bitmap bp = (Bitmap) data.getExtras().get("data");
             capturedImage.setImageBitmap(bp);
             images.add(bp);
-            if(images.size() == 2){
+            if (images.size() == 2) {
 
-                Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.biskupsky_palac2), firstFrame);
+                /*Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.biskupsky_palac2), firstFrame);
                 Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.biskupsky_palac3), secondFrame);
-                Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.ref_biskupsky_palac), refFrame);
+                Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.ref_biskupsky_palac), refFrame);*/
 
-                Log.d(TAG, "Now procesesing native method");
-                OpenCVNative.initReconstruction(firstFrame.getNativeObjAddr(), secondFrame.getNativeObjAddr(), refFrame.getNativeObjAddr(),
-                cx_f, cy_f, fx_f, fy_f, cx_c, cy_c, fx_c, fy_c);
+                OpenCVNative.initReconstruction(firstFrame.getNativeObjAddr(), secondFrame.getNativeObjAddr(), refFrame.getNativeObjAddr(), calibrate_params);
 
                 ActivityCompat.finishAffinity(this);
                 Intent intent = new Intent(this, SelectPointsActivity.class);
+                intent.putExtra("first_image", firstFrame.getNativeObjAddr());
+                intent.putExtra("ref_image", refFrame.getNativeObjAddr());
                 startActivity(intent);
             }
         }
@@ -143,4 +200,5 @@ public class CameraActivity extends ActionBarActivity {
     public void exitApplication(MenuItem item) {
         System.exit(0);
     }
+
 }
