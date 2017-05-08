@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -50,6 +52,12 @@ public class SettingActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         message = intent.getStringExtra(EXTRA_MESSAGE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
@@ -108,5 +116,10 @@ public class SettingActivity extends ActionBarActivity {
         intent.putExtra("PATH_FIRST_IMAGE", path_first_image);
         intent.putExtra("PATH_SECOND_IMAGE", path_second_image);
         startActivity(intent);
+        finish();
+    }
+
+    public void exitApplication(MenuItem item) {
+        finish();
     }
 }

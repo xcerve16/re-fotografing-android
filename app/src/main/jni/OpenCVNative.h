@@ -9,8 +9,9 @@ extern "C" {
 JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_initReconstruction
   (JNIEnv *, jclass, jlong, jlong, jlong, jfloatArray);
 
-JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_processReconstruction
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT jfloatArray
+JNICALL Java_com_delaroystudios_camera_OpenCVNative_processReconstruction
+        (JNIEnv * , jclass);
 
 JNIEXPORT jfloatArray JNICALL Java_com_delaroystudios_camera_OpenCVNative_nextPoint
   (JNIEnv *, jclass);

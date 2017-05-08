@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -41,6 +40,8 @@ public class CameraActivity extends Activity {
     private Mat firstFrame;
     private Mat secondFrame;
     private Mat refFrame;
+
+    Bitmap bt_ref_frame;
 
     String path_ref_image;
     String path_first_image;
@@ -80,11 +81,6 @@ public class CameraActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        ImageView layout1 = (ImageView) findViewById(R.id.capturedImage);
-        Drawable myDrawable = getResources().getDrawable(R.drawable.rsz_biskupsky_palac_4);
-        layout1.setImageDrawable(myDrawable);
-
-
         Typeface font = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         Button btnCamera = (Button) findViewById(R.id.btnCamera);
 
@@ -119,17 +115,14 @@ public class CameraActivity extends Activity {
         path_first_image = intent.getStringExtra("PATH_FIRST_IMAGE");
         path_second_image = intent.getStringExtra("PATH_SECOND_IMAGE");
 
+
+        File file0 = new File(path_ref_image);
+        bt_ref_frame = BitmapFactory.decodeFile(file0.getAbsolutePath());
+
     }
 
-    private void calc(){
-        File file0 = new File(path_ref_image);
-        Bitmap myBitmap0 = BitmapFactory.decodeFile(file0.getAbsolutePath());
-        Utils.bitmapToMat(myBitmap0, refFrame);
-
-       /* Log.d(TAG,"Ref images: " + path_ref_image);
-        Log.d(TAG,"First images: " +  path_first_image);
-        Log.d(TAG,"Second images: " +  path_second_image);*/
-
+    private void calc() {
+        Utils.bitmapToMat(bt_ref_frame, refFrame);
         if (!"".equals(path_first_image) && !"".equals(path_second_image)) {
 
             File file1 = new File(path_first_image);
@@ -141,14 +134,18 @@ public class CameraActivity extends Activity {
 
             Utils.bitmapToMat(myBitmap1, firstFrame);
             Utils.bitmapToMat(myBitmap2, secondFrame);
+            Utils.bitmapToMat(bt_ref_frame, refFrame);
 
             OpenCVNative.initReconstruction(firstFrame.getNativeObjAddr(), secondFrame.getNativeObjAddr(), refFrame.getNativeObjAddr(), calibrate_params);
-            OpenCVNative.processReconstruction(firstFrame.getNativeObjAddr());
+            float[] points = OpenCVNative.processReconstruction();
             //Log.i(TAG, "Desc: " + out.dump());
 
             intent1.putExtra("first_image", firstFrame.getNativeObjAddr());
             intent1.putExtra("ref_image", refFrame.getNativeObjAddr());
+            intent1.putExtra("x", points[0]);
+            intent1.putExtra("y", points[1]);
             startActivity(intent1);
+            finish();
         }
     }
 
@@ -169,9 +166,8 @@ public class CameraActivity extends Activity {
             images.add(bp);
             if (images.size() == 2) {
 
-                /*Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.biskupsky_palac2), firstFrame);
-                Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.biskupsky_palac3), secondFrame);
-                Utils.bitmapToMat(BitmapFactory.decodeResource(getResources(), R.drawable.ref_biskupsky_palac), refFrame);*/
+                Utils.bitmapToMat(images.get(0), firstFrame);
+                Utils.bitmapToMat(images.get(1), secondFrame);
 
                 OpenCVNative.initReconstruction(firstFrame.getNativeObjAddr(), secondFrame.getNativeObjAddr(), refFrame.getNativeObjAddr(), calibrate_params);
 
@@ -180,6 +176,7 @@ public class CameraActivity extends Activity {
                 intent.putExtra("first_image", firstFrame.getNativeObjAddr());
                 intent.putExtra("ref_image", refFrame.getNativeObjAddr());
                 startActivity(intent);
+                finish();
             }
         }
     }

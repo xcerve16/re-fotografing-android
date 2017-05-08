@@ -16,6 +16,10 @@
 #include <opencv2/video/tracking.hpp>
 #include <iomanip>
 #include "opencv2/xfeatures2d.hpp"
+#include "opencv2/features2d/features2d.hpp"
+#include "opencv2/nonfree/features2d.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/nonfree/nonfree.hpp"
 
 #include "PnPProblem.h"
 #include "CameraCalibrator.h"
@@ -241,7 +245,7 @@ public:
     void initReconstruction(cv::Mat first_frame, cv::Mat second_frame, cv::Mat reference_frame, cv::Point2f cf,
                             cv::Point2f ff, cv::Point2f cc, cv::Point2f fc);
 
-    cv::Mat processReconstruction();
+    cv::Point2f processReconstruction();
 
     ModelRegistration getModelRegistration() { return registration; }
 

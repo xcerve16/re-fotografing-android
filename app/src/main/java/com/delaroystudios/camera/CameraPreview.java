@@ -72,7 +72,10 @@ public class CameraPreview implements SurfaceHolder.Callback, Camera.PreviewCall
         imageFormat = parameters.getPreviewFormat();
 
         mCamera.setParameters(parameters);
-        mCamera.setDisplayOrientation(90);
+        if (this.MyCameraPreview.getHeight() > this.MyCameraPreview.getWidth()) {
+            mCamera.setDisplayOrientation(270);
+        }
+
         mCamera.startPreview();
     }
 

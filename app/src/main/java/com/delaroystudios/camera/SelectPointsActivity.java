@@ -47,6 +47,9 @@ public class SelectPointsActivity extends ActionBarActivity {
 
         long firstFrameAddress = getIntent().getLongExtra("first_image", 0);
         long refFrameAddress = getIntent().getLongExtra("ref_image", 0);
+        float pos_x = getIntent().getFloatExtra("x", 0);
+        float pos_y = getIntent().getFloatExtra("y", 0);
+
         first_frame = new Mat(firstFrameAddress);
         ref_frame = new Mat(refFrameAddress);
 
@@ -62,6 +65,14 @@ public class SelectPointsActivity extends ActionBarActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
 
         imageView.setImageBitmap(bit_ref_frame);
+
+
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(5);
+        paint.setStyle(Paint.Style.FILL);
+        Canvas canvas = new Canvas(bit_first_frame);
+        canvas.drawPoint(pos_x, pos_y, paint);
 
         imageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -129,10 +140,11 @@ public class SelectPointsActivity extends ActionBarActivity {
         ActivityCompat.finishAffinity(this);
         Intent play = new Intent(this, NavigationProcesing.class);
         startActivity(play);
+        finish();
     }
 
     public void exitApplication(MenuItem item) {
-        System.exit(0);
+        finish();
     }
 
     public void nextPoint(MenuItem item) {

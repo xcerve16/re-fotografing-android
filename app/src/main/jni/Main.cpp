@@ -52,7 +52,7 @@ Main::initReconstruction(cv::Mat image1, cv::Mat image2, cv::Mat ref, cv::Point2
 
 }
 
-cv::Mat Main::processReconstruction() {
+cv::Point2f Main::processReconstruction() {
 
     /**
      * Robust matcher
@@ -136,9 +136,13 @@ cv::Mat Main::processReconstruction() {
      */
 
      registration.setRegistrationMax(number_registration);
-     cv:: Mat clone_frame_with_triangulation = first_image;
-     draw2DPoint(clone_frame_with_triangulation, detection_points_first_image[0], green);
-     return clone_frame_with_triangulation.clone();
+
+    float x = detection_points_first_image[0].x;
+    float y = detection_points_first_image[0].y;
+
+    cv::Point2f point = cv::Point2f(x, y);
+
+    return point;
 }
 
 cv::Mat Main::loadImage(const std::string path_to_ref_image) {

@@ -21,28 +21,48 @@ void JNICALL Java_com_delaroystudios_camera_OpenCVNative_initReconstruction
     process.initReconstruction(first_frame, second_frame, ref_image, center_f, focal_f, center_c, focal_c);
   }
 
-void JNICALL Java_com_delaroystudios_camera_OpenCVNative_processReconstruction
-  (JNIEnv *, jclass, jlong out){
-    cv::Mat& out_frame = *(cv::Mat*) out;
-    out_frame = process.processReconstruction();
+jfloatArray JNICALL
+Java_com_delaroystudios_camera_OpenCVNative_processReconstruction
+(JNIEnv
+*env, jclass){
+jfloatArray params = (*env).NewFloatArray(2);
+
+cv::Point2f point = process.processReconstruction();
+
+jfloat position[2];
+position[0] = point.
+x;
+position[1] = point.
+y;
+
+env->
+SetFloatArrayRegion(params,
+0, 2, position);
+
+return
+params;
   }
 
-JNIEXPORT jfloatArray JNICALL Java_com_delaroystudios_camera_OpenCVNative_nextPoint
+jfloatArray JNICALL
+Java_com_delaroystudios_camera_OpenCVNative_nextPoint
   (JNIEnv *env, jclass){
-    jfloatArray params =(*env).NewFloatArray(2);
+jfloatArray params = (*env).NewFloatArray(2);
 
-    cv::Point2f point = process.nextPoint();
+cv::Point2f point = process.nextPoint();
 
-    jfloat position[2];
-    position[0] = point.x;
-    position[1] = point.y;
+jfloat position[2];
+position[0] = point.
+x;
+position[1] = point.
+y;
 
      env->SetFloatArrayRegion(params, 0, 2, position);
 
      return params;
   }
 
-JNIEXPORT jfloatArray JNICALL Java_com_delaroystudios_camera_OpenCVNative_registrationPoints
+jfloatArray JNICALL
+Java_com_delaroystudios_camera_OpenCVNative_registrationPoints
   (JNIEnv *env, jclass, jdouble x, jdouble y){
      jfloatArray params =(*env).NewFloatArray(2);
 
@@ -57,7 +77,8 @@ JNIEXPORT jfloatArray JNICALL Java_com_delaroystudios_camera_OpenCVNative_regist
      return params;
   }
 
-JNIEXPORT void JNICALL Java_com_delaroystudios_camera_OpenCVNative_initNavigation
+void JNICALL
+Java_com_delaroystudios_camera_OpenCVNative_initNavigation
   (JNIEnv *, jclass){
      process.initNavigation();
   }

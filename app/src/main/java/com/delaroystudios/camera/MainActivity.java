@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,6 +37,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_layout);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     public void playApplication(View view) {
@@ -81,7 +89,11 @@ public class MainActivity extends ActionBarActivity {
             Intent intent = new Intent(this, SettingActivity.class);
             intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
+            finish();
         }
     }
 
+    public void exitApplication(MenuItem item) {
+        finish();
+    }
 }
