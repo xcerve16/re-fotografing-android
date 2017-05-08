@@ -55,8 +55,7 @@ D:\Refotografing-native\app\src\main/obj/local/armeabi-v7a/objs/native-lib/OpenC
   C:/android-ndk-r14/build//../sources/cxx-stl/gnu-libstdc++/4.9/include\iomanip \
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/xfeatures2d.hpp \
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/xfeatures2d/nonfree.hpp \
-  D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/features2d/features2d.hpp \
-  D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/nonfree/features2d.hpp \
+  D:/Refotografing-native/app/src/main/jni/PnPProblem.h \
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/highgui/highgui.hpp \
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/highgui.hpp \
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/imgcodecs.hpp \
@@ -64,8 +63,6 @@ D:\Refotografing-native\app\src\main/obj/local/armeabi-v7a/objs/native-lib/OpenC
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/highgui/highgui_c.h \
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/imgcodecs/imgcodecs_c.h \
   D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/videoio/videoio_c.h \
-  D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/nonfree/nonfree.hpp \
-  D:/Refotografing-native/app/src/main/jni/PnPProblem.h \
   D:/Refotografing-native/app/src/main/jni/ModelRegistration.h \
   D:/Refotografing-native/app/src/main/jni/CameraCalibrator.h \
   D:/Refotografing-native/app/src/main/jni/Utils.h \
@@ -79,7 +76,8 @@ D:\Refotografing-native\app\src\main/obj/local/armeabi-v7a/objs/native-lib/OpenC
   D:/OpenCV-android-sdk/sdk/native/jni/include/opencv\highgui.h \
   D:/OpenCV-android-sdk/sdk/native/jni/include/opencv\cxcore.h \
   D:/Refotografing-native/app/src/main/jni/errorNIETO.h \
-  D:/Refotografing-native/app/src/main/jni/RobustMatcher.h
+  D:/Refotografing-native/app/src/main/jni/RobustMatcher.h \
+  D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/features2d/features2d.hpp
 
 D:/Refotografing-native/app/src/main/jni\OpenCVNative.h:
 
@@ -191,9 +189,7 @@ D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/xfeatures2d.hpp:
 
 D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/xfeatures2d/nonfree.hpp:
 
-D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/features2d/features2d.hpp:
-
-D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/nonfree/features2d.hpp:
+D:/Refotografing-native/app/src/main/jni/PnPProblem.h:
 
 D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/highgui/highgui.hpp:
 
@@ -208,10 +204,6 @@ D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/highgui/highgui_c.h:
 D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/imgcodecs/imgcodecs_c.h:
 
 D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/videoio/videoio_c.h:
-
-D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/nonfree/nonfree.hpp:
-
-D:/Refotografing-native/app/src/main/jni/PnPProblem.h:
 
 D:/Refotografing-native/app/src/main/jni/ModelRegistration.h:
 
@@ -240,3 +232,5 @@ D:/OpenCV-android-sdk/sdk/native/jni/include/opencv\cxcore.h:
 D:/Refotografing-native/app/src/main/jni/errorNIETO.h:
 
 D:/Refotografing-native/app/src/main/jni/RobustMatcher.h:
+
+D:/OpenCV-android-sdk/sdk/native/jni/include\opencv2/features2d/features2d.hpp:
